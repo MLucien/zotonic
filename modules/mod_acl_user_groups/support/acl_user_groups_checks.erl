@@ -125,6 +125,8 @@ can_insert_category(_, _, #context{acl=admin}) ->
     true;
 can_insert_category(_, _, #context{user_id=1}) ->
     true;
+can_insert_category(undefined, CatId, Context) ->
+    can_insert_category(CatId, Context);
 can_insert_category(CGId, CatId, Context) ->
     CGId1 = m_rsc:rid(CGId, Context),
     CatId1 = m_rsc:rid(CatId, Context),
@@ -637,7 +639,7 @@ is_owner(insert_rsc, _Context) ->
     true;
 is_owner(Id, #context{user_id=UserId} = Context) ->
     case z_notifier:first(#acl_is_owner{
-            id=Id, 
+            id=Id,
             creator_id=m_rsc:p_no_acl(Id, creator_id, Context),
             user_id=UserId
         },
